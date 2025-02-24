@@ -1,0 +1,265 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, SPRING 2025
+        HOMEWORK 1 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the initial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+		Ming Wang
+        </name>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+		908 494 5329
+		
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+
+            %%sql
+            SELECT A.i, A.j, (A.val + B.val) AS val
+            FROM A
+            JOIN B ON A.i = B.i
+            AND A.j = B.j;
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+            %%sql
+            SELECT sum(A.val * B.val) AS DotProduct
+            FROM A
+            JOIN B ON A.i = B.i
+            WHERE A.j = 0
+            AND B.j = 1;
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <answer number="1c">
+        <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
+
+            %%sql
+            SELECT A.i, B.j, SUM(A.val * B.val) AS val
+            FROM A
+            JOIN B ON A.j = B.i
+            GROUP BY A.i, B.j;
+
+        ]]><!-- End problem 1, part (c). -->
+    </answer>
+    <answer number="1d">
+        <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
+
+            %%sql
+            WITH A_2 AS (
+                SELECT A1.i, A2.j, SUM(A1.val * A2.val) AS val
+                FROM A A1
+                JOIN A A2 ON A1.j = A2.i
+                GROUP BY A1.i, A2.j
+            ),
+            AB AS (
+                SELECT A.i, B.j, SUM(A.val * B.val) AS val
+                FROM A
+                JOIN B ON A.j = B.i
+                GROUP BY A.i, B.j
+            ),
+            AB_2 AS(
+                SELECT AB1.i, AB2.j, SUM(AB1.val * AB2.val) AS val
+                FROM AB AB1
+                JOIN AB AB2 ON AB1.j = AB2.i 
+                GROUP BY AB1.i, AB2.j
+            )
+            SELECT A_2.i, A_2.j, (A_2.val + 2 * AB_2.val) AS val
+            FROM A_2
+            JOIN AB_2 ON A_2.i = AB_2.i
+            AND A_2.j = AB_2.j;
+
+
+        ]]><!-- End problem 1, part (d). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+            %%sql
+            WITH Holi_Sales AS (
+                SELECT S.Store, SUM(S.WeeklySales) AS AllSales
+                FROM Sales S
+                JOIN Holidays H ON S.WeekDate = H.WeekDate
+                WHERE H.IsHoliday = "TRUE"
+                GROUP BY S.Store
+            )
+            SELECT Store, AllSales
+            FROM Holi_Sales
+            WHERE AllSales = (SELECT Max(AllSales) FROM Holi_Sales);
+
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+            %%sql
+            WITH NonHoli_Sales AS (
+                SELECT S.WeekDate, SUM(S.WeeklySales) AS NHo_Sales
+                FROM Sales S
+                WHERE EXISTS (
+                    SELECT * FROM Holidays H WHERE S.WeekDate = H.WeekDate AND H.IsHoliday = "FALSE"
+                )
+                GROUP BY S.WeekDate
+            ),
+            Holi_Avg_Sales AS (
+                SELECT AVG(TotalSales) AS Ho_avg_Sales
+                FROM (
+                    SELECT S.WeekDate, SUM(S.WeeklySales) AS TotalSales
+                    FROM Sales S
+                    WHERE EXISTS (
+                        SELECT * FROM Holidays H WHERE S.WeekDate = H.WeekDate AND H.IsHoliday = "TRUE"
+                    )
+                    GROUP BY S.WeekDate
+                ) AS HolidayTotals
+            )
+            SELECT COUNT(*) AS NumberNonHolidays
+            FROM NonHoli_Sales N
+            WHERE N.NHo_Sales > (SELECT Ho_avg_Sales FROM Holi_Avg_Sales);
+
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+            %%sql
+            SELECT S.Type, AVG(SL.WeeklySales) AS AvgSales
+            FROM Sales SL
+            JOIN Stores S ON S.Store = SL.Store
+            WHERE substr(SL.WeekDate, 6, 2) IN ('12', '01', '02')
+            GROUP BY S.Type;
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+
+            %%sql
+            SELECT DISTINCT
+                st1.B AS company,
+                st1.d AS distance
+            FROM streets AS st1
+            WHERE st1.A = 'UW-Madison' AND st1.d <= 10
+
+            UNION
+
+            SELECT DISTINCT
+                st2.B AS company,
+                (st1.d + st2.d) AS distance
+            FROM streets AS st1
+            JOIN streets AS st2 ON st1.B = st2.A
+            WHERE st1.A = 'UW-Madison' AND (st1.d + st2.d) <= 10
+
+            UNION
+
+            SELECT DISTINCT
+                st3.B AS company,
+                (st1.d + st2.d + st3.d) AS distance
+            FROM streets AS st1
+            JOIN streets AS st2 ON st1.B = st2.A
+            JOIN streets AS st3 ON st2.B = st3.A
+            WHERE st1.A = 'UW-Madison' AND (st1.d + st2.d + st3.d) <= 10;
+
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+            %%sql
+            DROP VIEW IF EXISTS neighbors;
+            CREATE VIEW neighbors AS 
+
+            SELECT DISTINCT st.A, st.d
+            FROM streets st WHERE st.B = "UW-Madison"
+
+            UNION 
+
+            SELECT DISTINCT st.B, st.d
+            FROM streets st WHERE st.A = "UW-Madison"
+
+            UNION 
+
+            SELECT DISTINCT st1.A, (st1.d + st2.d) 
+            FROM streets st1
+            JOIN streets st2 ON st1.B = st2.A
+            WHERE st2.B = "UW-Madison"
+
+            UNION
+
+            SELECT DISTINCT st2.B, (st1.d + st2.d)
+            FROM streets st1
+            JOIN streets st2 ON st1.A = st2.B
+            WHERE st2.A = "UW-Madison";
+
+
+            %%sql
+            SELECT 
+                n1.A AS company_1, 
+                n2.A AS company_2, 
+                MIN(n1.d + n2.d) AS distance   
+            FROM 
+                neighbors n1
+            JOIN 
+                neighbors n2 ON n1.A < n2.A 
+            WHERE 
+                (n1.d + n2.d) <= 15
+            GROUP BY 
+                company_1, company_2
+            ORDER BY 
+                company_1, company_2;
+
+
+
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <answer number="3c">
+        <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
+
+            %%sql
+            SELECT MAX(st1.d + st2.d + st3.d) AS LongestDistance
+            FROM streets st1
+            JOIN streets st2 ON st1.B = st2.A
+            JOIN streets st3 ON st2.B = st3.A
+            WHERE st3.B = st1.A
+            AND st1.A <> st2.B
+            AND st2.A <> st3.B
+
+        ]]><!-- End problem 3, part (c). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+
+</pset>
