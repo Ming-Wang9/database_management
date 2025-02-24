@@ -1,0 +1,5 @@
+.separator | 
+
+.import Bids.dat Bids
+
+

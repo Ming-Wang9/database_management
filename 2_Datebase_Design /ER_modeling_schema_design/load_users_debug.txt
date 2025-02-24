@@ -1,0 +1,7 @@
+.separator | 
+
+.import users.dat Users
+
+
+update Users set Location = NULL WHERE Location = 'NULL';
+update Users set Country = NULL WHERE Country = 'NULL';

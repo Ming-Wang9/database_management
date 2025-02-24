@@ -1,0 +1,16 @@
+.separator | 
+
+.import items.dat Items
+.import categories.dat Categories
+.import users.dat Users
+.import bids.dat Bids
+
+update Items set Currently = NULL WHERE Currently = 'NULL';
+update Items set Buy_Price = NULL WHERE Buy_Price = 'NULL';
+update Items set First_Bid = NULL WHERE First_Bid = 'NULL';
+update Items set Number_of_Bids = NULL WHERE Number_of_Bids = 'NULL';
+update Items set Started = NULL WHERE Started = 'NULL';
+update Items set Ends = NULL WHERE Ends = 'NULL';
+
+update Users set Location = NULL WHERE Location = 'NULL';
+update Users set Country = NULL WHERE Country = 'NULL';

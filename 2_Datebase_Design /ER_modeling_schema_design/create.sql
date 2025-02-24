@@ -1,0 +1,47 @@
+DROP TABLE IF EXISTS Items;
+DROP TABLE IF EXISTS Categories;
+DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Bids;
+
+CREATE TABLE Items (
+	ItemID NUMBER PRIMARY KEY,
+	Name TEXT NOT NULL,
+	Currently TEXT,
+	Buy_Price TEXT,
+	First_Bid TEXT,
+	Number_of_Bids NUMBER,
+	Started TEXT,
+	Ends TEXT,
+	SellerID TEXT NOT NULL,
+	Description TEXT,
+	FOREIGN KEY (SellerID) REFERENCES Users(UserID)
+);
+
+
+CREATE TABLE Categories (
+	ItemID TEXT NOT NULL,
+	Cat TEXT NOT NULL,
+	PRIMARY KEY (ItemID, Cat), 
+	FOREIGN KEY (ItemID) REFERENCES Items(ItemID)
+);
+
+
+CREATE TABLE Users (
+	UserID TEXT NOT NULL,
+	Rating NUMBER NOT NULL,
+	Location TEXT,
+	Country TEXT,
+	PRIMARY KEY (UserID)
+);
+
+
+CREATE TABLE Bids (
+	Time TEXT NOT NULL,
+	Amount TEXT NOT NULL,
+	ItemID NUMBER NOT NULL,
+	BidderID TEXT NOT NULL,
+	PRIMARY KEY (ItemID, BidderID, Time),
+	FOREIGN KEY (ItemID) REFERENCES Items(ItemID),
+	FOREIGN KEY (BidderID) REFERENCES Users(UserID)
+);
+
