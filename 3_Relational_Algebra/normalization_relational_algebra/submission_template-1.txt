@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<pset>
+
+    <!--
+        CS 564, Spring 2025
+        HOMEWORK 3 SUBMISSION TEMPLATE
+
+        Please copy and paste your SQL queries (and potentially Python and Latex code) 
+	into the appropriate spots below. 
+
+        When submitting SQL queries, please do not include the initial 
+        %sql or %%sql IPython commands. Just include the SQL code.
+
+        DO NOT DELETE THE <![CDATA[ ... ]]> LINES IN EACH <answer> TAG!
+        Doing so will break the autograder. To avoid accidentally breaking
+        something, please leave all existing comments in this template
+        intact in your submission.
+    -->
+
+    <student>
+        <name>
+            <!-- Insert your full name on the line below. -->
+            Ming Wang
+        </name>
+        <studentid>
+            <!-- Insert your student ID number below. -->
+            908 494 5329
+        </studentid>
+    </student>
+
+
+    <!-- BEGIN PROBLEM 1 -->
+    <answer number="1a">
+        <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
+
+            SELECT 0
+            FROM Hospital h1
+            JOIN Hospital h2 ON h1.provider = h2.provider
+            WHERE 
+                h1.hospital != h2.hospital OR
+                h1.address != h2.address OR
+                h1.city != h2.city OR
+                h1.state != h2.state OR
+                h1.zip != h2.zip OR
+                h1.county != h2.county OR
+                h1.phone_number != h2.phone_number OR
+                h1.hospital_type != h2.hospital_type OR
+                h1.hospital_owner != h2.hospital_owner OR
+                h1.emergency_service != h2.emergency_service OR
+                h1.condition != h2.condition OR
+                h1.measure_code != h2.measure_code
+
+        ]]><!-- End problem 1, part (a). -->
+    </answer>
+    <answer number="1b">
+        <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
+
+            SELECT 0
+            FROM Hospital
+            GROUP BY zip
+            HAVING COUNT(DISTINCT city) > 1 OR COUNT(DISTINCT state) > 1
+
+        ]]><!-- End problem 1, part (b). -->
+    </answer>
+    <!-- END PROBLEM 1 -->
+
+
+    <!-- BEGIN PROBLEM 2 -->
+    <answer number="2a">
+        <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
+
+            answer = True
+            explanation = "{A,B} includes all attribute, A determines D and E, and D determines C and F"
+
+        ]]><!-- End problem 2, part (a). -->
+    </answer>
+    <answer number="2b">
+        <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
+
+            answer = False
+            explanation = " after apply chase algo, every row has at least one subscripts; a,  b,  c, d1, e, f, a2, b2, c, d,  e, f2, a,  b3, c, d1, e, f"
+                                
+
+        ]]><!-- End problem 2, part (b). -->
+    </answer>    
+    <answer number="2c">
+        <!-- Paste your solution to problem 2, part (c) below this line. --><![CDATA[
+
+            answer = False
+            explanation = "it violates BCNF: A is not a superkey, because its closure excludes B. D is not a superkey it is missing A, B, E."
+
+        ]]><!-- End problem 2, part (c). -->
+    </answer>
+    <!-- END PROBLEM 2 -->
+
+    <!-- BEGIN PROBLEM 3 -->
+    <answer number="3a">
+        <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
+            
+            $$
+            \pi_{\text{name}} \left( \sigma_{\text{affiliation}="UW-Madison"}(\text{Person}) \bowtie_{\text{pid}} \left( (\sigma_{\text{year}=2021}(\text{Conference})) \bowtie_{\text{confid}} \text{Article} \right) \bowtie_{\text{artid}} \text{Author} \right)
+            $$
+
+        ]]><!-- End problem 3, part (a). -->
+    </answer>
+    <answer number="3b">
+        <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
+
+            $$
+            \gamma_{\text{pid}, \text{COUNT}(\text{artid}) \rightarrow \text{art\_count}} \left( \left( \text{Article} \bowtie_{\text{confid}} \sigma_{\text{name} = \text{"PODS"}}(\text{Conference}) \right) \bowtie_{\text{artid}} \text{Author} \right)
+            $$
+
+
+        ]]><!-- End problem 3, part (b). -->
+    </answer>
+    <!-- END PROBLEM 3 -->
+
+</pset>

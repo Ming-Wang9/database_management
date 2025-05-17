@@ -1,0 +1,7 @@
+To run and check the tests work, do:
+./qutest > output.txt
+
+diff output.txt expected_output.txt
+(or cmp output.txt expected_output.txt)
+
+Both should return nothing, aka they're equal
